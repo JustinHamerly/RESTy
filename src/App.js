@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import './App.scss';
 
@@ -19,15 +20,18 @@ class App extends React.Component {
     };
   }
 
-  callApi = (requestParams) => {
-    // mock output
+  callApi = async (requestParams) => {
+
+    let API_URL = requestParams.url;
+
+    const response = await axios.get(API_URL);
+
     const data = {
-      count: 2,
-      results: [
-        {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-        {name: 'fake thing 2', url: 'http://fakethings.com/2'},
-      ],
+      headers: response.headers,
+      count: response.data.count,
+      results: response.data.results
     };
+    
     this.setState({data, requestParams});
   }
 

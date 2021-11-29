@@ -1,0 +1,11 @@
+$backgroundColor: #f3e5b5;
+$borderColor: #2e2e2e;
+
+section {
+  background-color: $backgroundColor;
+  display: inline-block;
+  padding-left: 15px;
+  margin: 15px;
+  border: solid $borderColor 6px;
+  border-radius: 10px;
+}
