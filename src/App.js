@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+// import { useState } from 'react';
 
 import './App.scss';
 
@@ -10,43 +12,34 @@ import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
 
-class App extends React.Component {
+function App() {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      requestParams: {},
-    };
-  }
+  let [pokemon, setPokemon] = useState([]);
+  let [results, setResults] = useState({});
+  let [requestParams, setRequestParams] = useState({});
 
-  callApi = async (requestParams) => {
+  useEffect(() => {
+    axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}/`)
+      .then(response => {
+        setResults(response.data);
+      }).catch(e => {
+        console.log('error: ', e);
+      });
+  }, [pokemon]);
 
-    let API_URL = requestParams.url;
-
-    const response = await axios.get(API_URL);
-
-    const data = {
-      headers: response.headers,
-      count: response.data.count,
-      results: response.data.results
-    };
-    
-    this.setState({data, requestParams});
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <Header />
-        <div>Request Method: {this.state.requestParams.method}</div>
-        <div>URL: {this.state.requestParams.url}</div>
-        <Form handleApiCall={this.callApi} />
-        <Results data={this.state.data} />
-        <Footer />
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <Header />
+      <div>Request Method: {requestParams.method}</div>
+      <div>URL: {requestParams.url}</div>
+      <Form 
+      setName={setPokemon} 
+      setRequest={setRequestParams}
+      />
+      <Results name={results.name} stats={results.stats} />
+      <Footer />
+    </React.Fragment>
+  );
 }
 
 export default App;
