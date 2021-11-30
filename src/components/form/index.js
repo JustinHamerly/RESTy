@@ -2,47 +2,31 @@ import React from 'react';
 import { useState } from 'react';
 import './form.scss';
 
-function Form(props) {
+function Form({ setName, setRequest }) {
 
-  const [urlValue, setURLValue] = useState('');
-  const [methodValue, setMethodValue] = useState('');
-  const [methodSelected, setMethodSelect] = useState('');
-
-  function handleURLInput(e) {
-    let { value } = e.target;
-    setURLValue(value);
-  }
+  const [method, setMethod] = useState('');
 
   function handleClick(e) {
-    let method = e.target.id.toUpperCase();
-    setMethodValue(method);
-    handleSelectedMethodStyle(e.target);
-  }
-
-  function handleSelectedMethodStyle(target) {
-    if (methodSelected) {
-      methodSelected.classList.remove('selected');
+    let method = {
+      method: e.target.id.toUpperCase(),
+      url: 'https://pokeapi.co/api/v2/pokemon/',
     }
-
-    setMethodSelect(target);
-    target.classList.add('selected');
+    setMethod(method);
+    setRequest(method);
   }
 
   function handleSubmit(e){
     e.preventDefault();
-    const formData = {
-      method: methodValue,
-      url: urlValue,
-    };
-    props.handleApiCall(formData);
+    let name = e.target.pokename.value;
+    setName(name);
   }
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <label >
-          <span>URL: </span>
-          <input onChange={handleURLInput} name='url' type='text' />
+          <span>Pokemon Name or ID: </span>
+          <input name='pokename' type='text' />
           <button type="submit">GO!</button>
         </label>
         <label className="methods">
@@ -52,7 +36,7 @@ function Form(props) {
           <span onClick={handleClick} id="delete">DELETE</span>
         </label>
         <label>
-          <pre>{methodValue === 'POST' || methodValue === 'PUT' ? <input type="textarea"
+          <pre>{method.method === 'POST' || method === 'PUT' ? <input type="textarea"
             name="textValue" /> : null}</pre>
         </label>
       </form>
