@@ -5,7 +5,6 @@ function Form(props) {
   const [url, setURL] = useState('');
   const [method, setMethod] = useState('');
   const [methodSelected, setMethodSelect] = useState('');
-  const [formData, setFormData] = useState('');
 
   function handleURLInput(e) {
     let { value } = e.target;
@@ -35,10 +34,9 @@ function Form(props) {
     const data = {
       method: method || 'GET',
       url: url,
-      body: formData
     };
 
-    props.setRequestParams(data);
+    props.dispatch({type: 'ADD_REQUESTPARAMS', payload: data});
   }
 
   return (
@@ -59,7 +57,7 @@ function Form(props) {
           <pre>
             {
               method === 'POST' || method === 'PUT'
-                ? <textarea onChange={(e) => setFormData(e.target.value)}></textarea>
+                ? <textarea/>
                 : null}
           </pre>
         </label>
