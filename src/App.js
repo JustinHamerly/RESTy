@@ -1,42 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
+import './app.scss';
 
-// import { useState } from 'react';
-
-import './App.scss';
-
-// Let's talk about using index.js and some other name in the component folder
-// There's pros and cons for each way of doing this ...
 import Header from './components/header';
 import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
 
 function App() {
+  const [data, setData] = useState(null);
+  const [requestParams, setRequestParams] = useState({});
 
-  let [pokemon, setPokemon] = useState([]);
-  let [results, setResults] = useState({});
-  let [requestParams, setRequestParams] = useState({});
 
   useEffect(() => {
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}/`)
-      .then(response => {
-        setResults(response.data);
-      }).catch(e => {
-        console.log('error: ', e);
-      });
-  }, [pokemon]);
+    async function callApi() {
+      if (requestParams.url) {
+        let API_URL = requestParams.url;
+        const response = await axios.get(API_URL);
+        const data = {
+          Headers: response.headers,
+          count: response.data.count,
+          Response: response.data.results
+        };
+        setData(data);
+      }
+    }
+    callApi();
+  }, [requestParams]);
 
   return (
     <React.Fragment>
       <Header />
-      <div>Request Method: {requestParams.method}</div>
-      <div>URL: {requestParams.url}</div>
-      <Form 
-      setName={setPokemon} 
-      setRequest={setRequestParams}
-      />
-      <Results name={results.name} stats={results.stats} />
+      <Form setRequestParams={setRequestParams} />
+      <div id='requestMethod'>Request Method: {requestParams.method}</div>
+      <div id='url'>URL: {requestParams.url}</div>
+      <Results data={data} />
       <Footer />
     </React.Fragment>
   );
